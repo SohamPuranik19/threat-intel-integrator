@@ -1,3 +1,0 @@
-# Sample email IOC list for import_email_iocs.py
-phisher.one@example.com
-bad.actor@example.org
