@@ -1,0 +1,5 @@
+# Example IOC list (newline-delimited)
+# You can use IPs, domains, or emails here.
+8.8.8.8
+phisher.one@example.com
+login-secure-update.example.com
