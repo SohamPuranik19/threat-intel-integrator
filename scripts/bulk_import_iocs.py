@@ -85,7 +85,23 @@ def heuristic_results(indicator: str, assume_email_phishing: bool, default_score
     """
     src = []
     if is_email(indicator):
+        # Expanded heuristics for emails
+        disposable = {
+            'mailinator.com','10minutemail.com','sharklasers.com','guerrillamail.com',
+            'tempmail.com','dispostable.com','yopmail.com','trashmail.com','fakeinbox.com',
+            'guerrillamailblock.com','maildrop.cc'
+        }
+        user = indicator.split('@')[0].lower()
+        domain = indicator.split('@')[1].lower() if '@' in indicator else ''
         score = 80.0 if assume_email_phishing else default_score
+        # bump score for suspicious username tokens
+        suspicious_tokens = ['spam','phish','scam','malware','promo','noreply','admin','support','service']
+        for t in suspicious_tokens:
+            if t in user:
+                score = min(100.0, score + 20.0)
+        # lower score if disposable domain
+        if domain in disposable:
+            score = max(0.0, score - 60.0)
         tags = 'email,phishing' if assume_email_phishing else 'email'
         src.append({'source': 'Heuristic', 'score': score, 'tags': tags})
     elif is_domain(indicator):
@@ -96,8 +112,17 @@ def heuristic_results(indicator: str, assume_email_phishing: bool, default_score
         tags = 'domain,phishing' if has_term else 'domain'
         src.append({'source': 'Heuristic', 'score': score, 'tags': tags})
     else:
-        # Unknown type → use default
-        src.append({'source': 'Heuristic', 'score': default_score, 'tags': 'generic'})
+        # domain heuristics expanded
+        if is_domain(indicator):
+            low = indicator.lower()
+            suspicious_terms = ['login', 'verify', 'secure', 'update', 'account', 'wallet', 'bank', 'paypal', 'signin', 'confirm']
+            has_term = any(t in low for t in suspicious_terms)
+            score = 70.0 if has_term else default_score
+            tags = 'domain,phishing' if has_term else 'domain'
+            src.append({'source': 'Heuristic', 'score': score, 'tags': tags})
+        else:
+            # Unknown type → use default
+            src.append({'source': 'Heuristic', 'score': default_score, 'tags': 'generic'})
     return src
 
 
@@ -106,6 +131,8 @@ def main():
     p.add_argument('--file', required=True, help='Path to IOC file (txt or csv)')
     p.add_argument('--format', choices=['txt', 'csv'], help='Input format; auto from extension if omitted')
     p.add_argument('--analyze-ips', action='store_true', help='Call live APIs for IPs using .env keys')
+    p.add_argument('--batch-size', type=int, default=10, help='Number of external calls to make before sleeping')
+    p.add_argument('--batch-delay', type=float, default=1.0, help='Seconds to sleep between batches of external calls')
     p.add_argument('--assume-email-phishing', action='store_true', help='Treat emails as phishing with higher score')
     p.add_argument('--default-score', type=float, default=40.0, help='Default heuristic score for non-analyzed entries')
     args = p.parse_args()
@@ -133,12 +160,19 @@ def main():
 
     total = 0
     inserted = 0
+    external_call_count = 0
     for indicator in read_indicators(path, fmt):
         total += 1
         indicator = indicator.strip()
         try:
+            # If we have API access and the indicator is an IP, call external sources (with simple batching)
             if api and is_ip(indicator):
                 results = api.fetch_all_sources(indicator)
+                external_call_count += 1
+                # Sleep between batches to avoid hitting rate-limits
+                if external_call_count and args.batch_size > 0 and external_call_count % args.batch_size == 0:
+                    import time
+                    time.sleep(args.batch_delay)
             else:
                 results = heuristic_results(indicator, args.assume_email_phishing, args.default_score)
 

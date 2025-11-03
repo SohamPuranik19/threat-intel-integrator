@@ -1,98 +1,307 @@
 # Threat Intel Integrator
 
-This repository contains a small threat intelligence integrator with a Streamlit dashboard at `infosecwriteups/dashboard.py`.
+A comprehensive threat intelligence platform with multiple interfaces for analyzing IPs, domains, and other indicators of compromise (IOCs).
 
-You said you don't want Docker — below are instructions to run locally and to deploy on Streamlit Cloud (hosted Streamlit service).
+## Features
+
+- 🔍 **Multi-source Intelligence**: Integrates with VirusTotal, AbuseIPDB, and AlienVault OTX
+- 📊 **Multiple Interfaces**: 
+  - Modern React/Next.js frontend
+  - Streamlit dashboard for quick analysis
+  - FastAPI backend for programmatic access
+- 💾 **Local Database**: SQLite-based storage for all threat data
+- 🎨 **Beautiful UI**: Modern, responsive design with dark theme
+- 🧪 **Tested**: Automated smoke tests included
+- 🔐 **Authentication**: Simple email/password auth with PBKDF2-SHA256 hashing
 
 ---
 
-## Run locally (recommended for development)
+## Prerequisites
 
-1. Create and activate a Python virtual environment (optional but recommended):
+- Python 3.9+
+- Node.js 16+ and npm
+- Git
+
+## Installation
+
+### 1. Clone the Repository
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # macOS / Linux (zsh)
+git clone https://github.com/SohamPuranik19/threat-intel-integrator.git
+cd threat-intel-integrator
 ```
- 
 
-2. Install dependencies:
+### 2. Backend Setup (Python)
 
 ```bash
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install Python dependencies
 pip install -r requirements.txt
 ```
 
-3. Run the Streamlit dashboard:
+### 3. Frontend Setup (Node.js)
 
 ```bash
-streamlit run infosecwriteups/dashboard.py --server.port 8501 --server.address 127.0.0.1
+# Navigate to frontend directory
+cd frontend
+
+# Install Node.js dependencies
+npm install
+
+# Return to project root
+cd ..
 ```
 
-4. Open http://localhost:8501 in your browser.
+### 4. Environment Configuration (Optional)
 
-Notes:
-- The app uses the local SQLite DB file `threat_intel.db`. Make sure it exists or run the analysis (`python -m infosecwriteups.main`) to populate sample data.
-- The app now uses an absolute import to reliably locate the `ThreatDatabase` class when run in different environments.
-
-### Bulk import email indicators
-
-- Prepare a newline-delimited text file (or CSV) of the email addresses you want to add, for example `email_iocs.txt`.
-- Run the helper script to insert them into `threat_intel.db`:
+Create a `.env` file in the project root for API keys:
 
 ```bash
-.venv/bin/python scripts/import_email_iocs.py --input email_iocs.txt
+# Optional: Add your API keys for enhanced threat intelligence
+VIRUSTOTAL_KEY=your_vt_key_here
+ABUSEIPDB_KEY=your_abuseipdb_key_here
+OTX_KEY=your_otx_key_here
 ```
 
-- For CSV sources, provide the column name that holds the email address:
-
-```bash
-.venv/bin/python scripts/import_email_iocs.py --input phishing.csv --column email_address
-```
-
-The script skips duplicates (case-insensitive), assigns sensible phishing defaults (score 70, classification Malicious, category phishing), and exposes flags like `--score`, `--tags`, `--dry-run`, or `--db` if you need to tune the insertion.
+*Note: The tool works without API keys using heuristic analysis.*
 
 ---
 
-## Deploy to Streamlit Cloud (hosted)
+## Running the Application
 
-1. Push this repository to GitHub.
-2. Go to https://share.streamlit.io and sign in with your GitHub account.
-3. Click "New app" and select the repository and branch.
-4. For the "File in the repo to run", enter `infosecwriteups/dashboard.py`.
-5. Click "Deploy".
+You have three ways to run the application:
 
-Caveats for Streamlit Cloud:
-- Streamlit Cloud runs apps from your repository and does not provide persistent local files. If you need persistent storage for `threat_intel.db`, move to an external DB (Postgres, etc.) or use object storage and import on start.
-- Ensure required secrets/API keys are provided through Streamlit Cloud's Secrets manager (for example, `ABUSEIPDB_KEY`, `VIRUSTOTAL_KEY`, `OTX_KEY`) if you want analysis features to call external APIs.
+### Option 1: Modern React Frontend (Recommended)
+
+#### Terminal 1 - Start Backend API:
+```bash
+source .venv/bin/activate
+uvicorn infosecwriteups.api_server:app --host 127.0.0.1 --port 8000 --reload
+```
+
+#### Terminal 2 - Start Frontend:
+```bash
+cd frontend
+npm run dev
+```
+
+Then open: **http://localhost:3000**
 
 ---
 
-## If you want, I can:
-- Add a small script to export/import DB contents to a CSV for backup/restore on Streamlit Cloud.
-- Add a lightweight `requirements.txt` pinning and `runtime.txt` if Streamlit Cloud needs a specific Python version.
-- Add GitHub Actions to run tests and optionally deploy.
+### Option 2: Streamlit Dashboard
 
-Tell me which of the above you want me to do next.
+```bash
+source .venv/bin/activate
+streamlit run infosecwriteups/dashboard.py --server.port 8502
+```
+
+Then open: **http://localhost:8502**
 
 ---
 
-## Authentication notes
+### Option 3: API Only
 
-- The app now supports simple email/password authentication backed by the local SQLite DB (`threat_intel.db`).
-- Passwords are hashed using PBKDF2-SHA256 (via passlib) which does not have the 72-byte limit that bcrypt has — you can use arbitrarily long passwords.
-- To reset users, delete the database file `threat_intel.db` or remove rows from the `users` table. Example:
+```bash
+source .venv/bin/activate
+uvicorn infosecwriteups.api_server:app --host 127.0.0.1 --port 8000
+```
+
+API documentation: **http://127.0.0.1:8000/docs**
+
+---
+
+## Testing
+
+Run automated smoke tests to verify everything is working:
+
+```bash
+./tests/smoke_test.sh
+```
+
+This tests:
+- ✅ Frontend loads correctly
+- ✅ Backend API endpoints respond
+- ✅ Search functionality works
+- ✅ Lookup functionality works
+- ✅ CORS is configured properly
+
+---
+
+## Usage Examples
+
+### Using the Web Interface
+
+1. **Search for an indicator**:
+   - Enter an IP (e.g., `8.8.8.8`) or domain (e.g., `google.com`)
+   - Click "Lookup" to analyze
+   - View the quick verdict with threat score and classification
+
+2. **Load all data**:
+   - Click "Load Table" to see all stored indicators
+   - Browse through the interactive table
+   - View charts and statistics
+
+### Using the API
+
+#### Search for indicators:
+```bash
+curl "http://127.0.0.1:8000/search?q=8.8.8.8&limit=10"
+```
+
+#### Lookup a specific indicator:
+```bash
+curl -X POST "http://127.0.0.1:8000/lookup" \
+  -H "Content-Type: application/json" \
+  -d '{"indicator":"google.com","analyze":true}'
+```
+
+---
+
+## Project Structure
+
+```
+threat-intel-integrator/
+├── infosecwriteups/
+│   ├── api_server.py          # FastAPI backend
+│   ├── dashboard.py           # Streamlit UI
+│   ├── database.py            # SQLite database handler
+│   ├── api_integrations.py   # External API integrations
+│   ├── processor.py           # Data processing logic
+│   └── config.py              # Configuration
+├── frontend/                  # Next.js React frontend
+│   ├── src/
+│   │   ├── app/              # Next.js app directory
+│   │   └── components/       # React components
+│   └── package.json
+├── tests/
+│   └── smoke_test.sh         # Automated tests
+├── scripts/
+│   └── add_test_data.py      # Add sample data
+├── requirements.txt          # Python dependencies
+└── threat_intel.db          # SQLite database
+```
+
+---
+
+## Development
+
+### Adding Sample Data
+
+```bash
+source .venv/bin/activate
+python scripts/add_test_data.py
+```
+
+### Running in Development Mode
+
+Both the backend (`--reload`) and frontend (`npm run dev`) support hot-reloading for development.
+
+---
+
+## Troubleshooting
+
+### Port Already in Use
+
+If you get port conflicts:
+
+```bash
+# Kill process on port 8000 (backend)
+lsof -ti:8000 | xargs kill -9
+
+# Kill process on port 3000 (frontend)
+lsof -ti:3000 | xargs kill -9
+```
+
+### CORS Errors
+
+Make sure the backend is running with CORS middleware enabled (already configured in `api_server.py`).
+
+### Database Issues
+
+If you need to reset the database:
+
+```bash
+rm threat_intel.db
+python scripts/add_test_data.py  # Add sample data
+```
+
+---
+
+---
+
+## API Endpoints
+
+- `GET /search?q={query}&limit={limit}` - Search indicators (query optional)
+- `POST /lookup` - Analyze a specific indicator
+- `GET /docs` - Interactive API documentation (Swagger UI)
+
+---
+
+## Authentication & User Management
+
+- The Streamlit dashboard supports email/password authentication
+- Passwords are hashed using PBKDF2-SHA256 (via passlib)
+- To reset users, manage the `users` table in SQLite:
 
 ```bash
 sqlite3 threat_intel.db "DELETE FROM users WHERE email = 'user@example.com';"
 ```
 
-Or remove the DB entirely (will also remove threat data):
+---
 
-```bash
-rm threat_intel.db
-```
+## Deploy to Streamlit Cloud (hosted)
 
-If you'd like stronger password hashing (e.g., Argon2) or persistent sessions, I can add that next.
+1. Push this repository to GitHub
+2. Go to https://share.streamlit.io and sign in
+3. Click "New app" and select the repository
+4. Set the main file to `infosecwriteups/dashboard.py`
+5. Add API keys through Streamlit Cloud's Secrets manager if needed
+6. Click "Deploy"
+
+**Note**: Streamlit Cloud doesn't provide persistent storage for SQLite. For production, consider using PostgreSQL or external object storage.
+
+---
+
+## Why Use This Project
+
+- **For SOC Analysts**: Fast, local triage of indicators of compromise
+- **For Incident Responders**: Consolidate multiple reputation sources in one dashboard
+- **For Threat Researchers**: Local-first approach with full data control
+- **For Small Security Teams**: Lightweight, extensible, and easy to customize
+
+---
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes
+4. Run tests: `./tests/smoke_test.sh`
+5. Commit your changes: `git commit -m 'Add amazing feature'`
+6. Push to the branch: `git push origin feature/amazing-feature`
+7. Open a Pull Request
+
+---
+
+## License
+
+MIT License - see LICENSE file for details
+
+---
+
+## Support
+
+For issues, questions, or contributions, please open an issue on GitHub.
+
+---
+
+**Happy Threat Hunting! 🔍🛡️**
+
+````
 
 ---
 
