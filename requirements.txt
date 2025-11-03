@@ -5,3 +5,8 @@ pandas
 plotly
 passlib[bcrypt]
 
+# API server
+fastapi
+uvicorn[standard]
+python-multipart
+

@@ -1,0 +1,36 @@
+
+> threat-intel-frontend@1.0.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ⚠ Invalid next.config.js options detected: 
+ ⚠     Unrecognized key(s) in object: 'appDir' at "experimental"
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+ ✓ Ready in 1953ms
+ ○ Compiling / ...
+ ⨯ ./src/app/globals.css:17:3
+Syntax error: /Users/sohampuranik/Documents/projects/threat-intel-integrator-main/frontend/src/app/globals.css The `to-white/2` class does not exist. If `to-white/2` is a custom class, make sure it is defined within a `@layer` directive.
+
+  15 | 
+  16 | .card{
+> 17 |   @apply p-4 rounded-xl bg-gradient-to-br from-black/10 to-white/2 border border-primary/10;
+     |   ^
+  18 | }
+  19 |
+ ⨯ ./src/app/globals.css:17:3
+Syntax error: /Users/sohampuranik/Documents/projects/threat-intel-integrator-main/frontend/src/app/globals.css The `to-white/2` class does not exist. If `to-white/2` is a custom class, make sure it is defined within a `@layer` directive.
+
+  15 | 
+  16 | .card{
+> 17 |   @apply p-4 rounded-xl bg-gradient-to-br from-black/10 to-white/2 border border-primary/10;
+     |   ^
+  18 | }
+  19 |
+ GET / 500 in 1732ms
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|/Users/sohampuranik/Documents/projects/threat-intel-integrator-main/frontend/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[12].use[2]!/Users/sohampuranik/Documents/projects/threat-intel-integrator-main/frontend/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[12].use[3]!/Users/sohampuranik/Documents/projects/threat-intel-integrator-main/frontend/src/app/globals.css': No serializer registered for PostCSSSyntaxError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> PostCSSSyntaxError
+ GET / 500 in 10ms
+[?25h
