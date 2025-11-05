@@ -4,6 +4,7 @@ streamlit
 pandas
 plotly
 passlib[bcrypt]
+python-whois
 
 # API server
 fastapi

@@ -16,8 +16,8 @@ export default function DataTable({ data }: any) {
     let filtered = data.filter((item: any) => {
       const matchesText = filter === '' || 
         item.indicator?.toLowerCase().includes(filter.toLowerCase()) ||
-        item.category?.toLowerCase().includes(filter.toLowerCase()) ||
-        item.source?.toLowerCase().includes(filter.toLowerCase())
+        item.indicator_type?.toLowerCase().includes(filter.toLowerCase()) ||
+        item.ioc_type?.toLowerCase().includes(filter.toLowerCase())
       
       const matchesClassification = classificationFilter === 'All' || 
         item.classification === classificationFilter
@@ -27,8 +27,10 @@ export default function DataTable({ data }: any) {
 
     if (sortBy) {
       filtered = [...filtered].sort((a, b) => {
-        let aVal = a[sortBy]
-        let bVal = b[sortBy]
+        // Handle composite_score field name
+        const sortField = sortBy === 'threat_score' ? 'composite_score' : sortBy
+        let aVal = a[sortField]
+        let bVal = b[sortField]
         
         if (typeof aVal === 'string') aVal = aVal.toLowerCase()
         if (typeof bVal === 'string') bVal = bVal.toLowerCase()
@@ -51,16 +53,15 @@ export default function DataTable({ data }: any) {
 
   // Export to CSV
   function exportToCSV() {
-    const headers = ['Indicator', 'Classification', 'Score', 'Category', 'Source', 'Country', 'ISP', 'Timestamp']
+    const headers = ['Indicator', 'Type', 'Classification', 'Score', 'IOC Type', 'Severity', 'Timestamp']
     const rows = filteredAndSortedData.map((item: any) => [
       item.indicator || '',
+      item.indicator_type || '',
       item.classification || '',
-      item.threat_score ?? item.score ?? '',
-      item.category || '',
-      item.source || '',
-      item.country || '',
-      item.isp || '',
-      item.timestamp || ''
+      item.composite_score ?? item.threat_score ?? '',
+      item.ioc_type || '',
+      item.severity || '',
+      item.created_at || item.timestamp || ''
     ])
     
     const csvContent = [
@@ -141,6 +142,11 @@ export default function DataTable({ data }: any) {
                   Indicator {getSortIcon('indicator')}
                 </div>
               </th>
+              <th className="p-2 cursor-pointer hover:text-primary transition-colors" onClick={() => handleSort('indicator_type')}>
+                <div className="flex items-center gap-1">
+                  Type {getSortIcon('indicator_type')}
+                </div>
+              </th>
               <th className="p-2 cursor-pointer hover:text-primary transition-colors" onClick={() => handleSort('classification')}>
                 <div className="flex items-center gap-1">
                   Classification {getSortIcon('classification')}
@@ -151,12 +157,11 @@ export default function DataTable({ data }: any) {
                   Score {getSortIcon('threat_score')}
                 </div>
               </th>
-              <th className="p-2">Category</th>
-              <th className="p-2">Source</th>
-              <th className="p-2">Country</th>
-              <th className="p-2 cursor-pointer hover:text-primary transition-colors" onClick={() => handleSort('timestamp')}>
+              <th className="p-2">IOC Type</th>
+              <th className="p-2">Severity</th>
+              <th className="p-2 cursor-pointer hover:text-primary transition-colors" onClick={() => handleSort('created_at')}>
                 <div className="flex items-center gap-1">
-                  Timestamp {getSortIcon('timestamp')}
+                  Timestamp {getSortIcon('created_at')}
                 </div>
               </th>
             </tr>
@@ -165,6 +170,7 @@ export default function DataTable({ data }: any) {
             {filteredAndSortedData.slice(0, 100).map((item: any, i: number) => (
               <tr key={i} className="border-t border-primary/6 hover:bg-primary/5 transition-colors">
                 <td className="p-2 font-mono text-primary">{item.indicator}</td>
+                <td className="p-2 text-text-secondary uppercase text-xs">{item.indicator_type || '-'}</td>
                 <td className="p-2">
                   <span className={`badge ${
                     item.classification === 'Malicious' ? 'badge-malicious' : 
@@ -174,11 +180,18 @@ export default function DataTable({ data }: any) {
                     {item.classification || 'Unknown'}
                   </span>
                 </td>
-                <td className="p-2 font-mono font-bold">{item.threat_score ?? item.score ?? '-'}</td>
-                <td className="p-2 text-text-secondary">{item.category || '-'}</td>
-                <td className="p-2 text-text-secondary text-xs">{item.source?.substring(0, 30) || '-'}</td>
-                <td className="p-2 text-text-secondary">{item.country || '-'}</td>
-                <td className="p-2 text-text-secondary text-xs">{item.timestamp?.substring(0, 19) || '-'}</td>
+                <td className="p-2 font-mono font-bold">{item.composite_score ?? item.threat_score ?? '-'}</td>
+                <td className="p-2 text-text-secondary">
+                  {item.ioc_type && item.ioc_type !== 'unknown' && item.ioc_type !== 'benign' ? (
+                    <span className="text-orange-400 text-xs uppercase">{item.ioc_type}</span>
+                  ) : '-'}
+                </td>
+                <td className="p-2 text-text-secondary text-xs">
+                  {item.severity && item.severity !== 'Unknown' ? item.severity : '-'}
+                </td>
+                <td className="p-2 text-text-secondary text-xs">
+                  {item.created_at?.substring(0, 19) || item.timestamp?.substring(0, 19) || '-'}
+                </td>
               </tr>
             ))}
           </tbody>

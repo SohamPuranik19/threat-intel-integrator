@@ -69,46 +69,68 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Animated matrix-style grid - MORE VISIBLE */}
-      <div className="fixed inset-0 opacity-20">
-        <div className="absolute inset-0 animate-grid-flow" style={{
-          backgroundImage: `
-            repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 140, 0, 0.1) 2px, rgba(255, 140, 0, 0.1) 4px),
-            repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 140, 0, 0.1) 2px, rgba(255, 140, 0, 0.1) 4px)
-          `,
-          backgroundSize: '50px 50px'
-        }}></div>
+      {/* Multi-layer animated background - MAXIMUM VISIBILITY */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        {/* Matrix-style falling code - VERY VISIBLE */}
+        <canvas id="matrix-canvas" className="absolute inset-0 w-full h-full opacity-50"></canvas>
+
+        {/* Hexagonal grid overlay - BRIGHTER */}
+        <div className="hex-grid opacity-60"></div>
+
+        {/* Enhanced radar with MORE visibility */}
+        <div className="radar-wrapper opacity-80">
+          <div className="radar">
+            <div className="ring ring-1"></div>
+            <div className="ring ring-2"></div>
+            <div className="ring ring-3"></div>
+            <div className="ring ring-4"></div>
+            <div className="sweep" />
+            <div className="blip b1" />
+            <div className="blip b2" />
+            <div className="blip b3" />
+            <div className="blip b4" />
+            <div className="blip b5" />
+            <div className="blip b6" />
+            <div className="blip b7" />
+            <div className="blip b8" />
+          </div>
+        </div>
+
+        {/* Animated data streams - BRIGHTER */}
+        <div className="data-streams opacity-80">
+          <div className="stream s1"></div>
+          <div className="stream s2"></div>
+          <div className="stream s3"></div>
+          <div className="stream s4"></div>
+          <div className="stream s5"></div>
+        </div>
+
+        {/* Network nodes with connecting lines - BRIGHTER */}
+        <svg className="network-nodes opacity-60" width="100%" height="100%">
+          <line className="node-line nl1" x1="15%" y1="20%" x2="35%" y2="40%" />
+          <line className="node-line nl2" x1="65%" y1="30%" x2="80%" y2="60%" />
+          <line className="node-line nl3" x1="20%" y1="70%" x2="50%" y2="80%" />
+          <line className="node-line nl4" x1="70%" y1="20%" x2="85%" y2="45%" />
+          <circle className="node n1" cx="15%" cy="20%" r="4" />
+          <circle className="node n2" cx="35%" cy="40%" r="5" />
+          <circle className="node n3" cx="65%" cy="30%" r="4" />
+          <circle className="node n4" cx="80%" cy="60%" r="5" />
+          <circle className="node n5" cx="20%" cy="70%" r="4" />
+          <circle className="node n6" cx="50%" cy="80%" r="5" />
+          <circle className="node n7" cx="70%" cy="20%" r="4" />
+          <circle className="node n8" cx="85%" cy="45%" r="5" />
+        </svg>
+
+        {/* Enhanced ambient glows - MUCH BRIGHTER */}
+        <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-orange-500/30 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="fixed bottom-0 right-0 w-[400px] h-[400px] bg-orange-600/30 rounded-full blur-3xl animate-pulse-slower" />
       </div>
 
-      {/* Animated floating particles - LARGER & BRIGHTER */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="particle particle-1"></div>
-        <div className="particle particle-2"></div>
-        <div className="particle particle-3"></div>
-        <div className="particle particle-4"></div>
-        <div className="particle particle-5"></div>
-        <div className="particle particle-6"></div>
-      </div>
-
-      {/* Animated orange glows - BRIGHTER */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
-      <div className="fixed bottom-0 right-0 w-[400px] h-[400px] bg-orange-600/10 rounded-full blur-3xl animate-pulse-slower"></div>
-
-      {/* Animated scan lines - MORE VISIBLE */}
-      <div className="fixed inset-0 pointer-events-none opacity-10">
-        <div className="h-full w-full animate-scan" style={{
-          background: 'linear-gradient(transparent 50%, rgba(255, 140, 0, 0.2) 50%)',
-          backgroundSize: '100% 4px'
-        }}></div>
-      </div>
-
-      {/* Animated circuit lines - MORE VISIBLE */}
-      <div className="fixed inset-0 pointer-events-none opacity-20">
+      {/* Animated circuit lines - BRIGHTER */}
+      <div className="fixed inset-0 pointer-events-none opacity-30">
         <svg className="w-full h-full">
-          <line x1="0" y1="20%" x2="100%" y2="20%" stroke="rgba(255, 140, 0, 0.3)" strokeWidth="2" className="animate-dash" />
-          <line x1="0" y1="40%" x2="100%" y2="40%" stroke="rgba(255, 140, 0, 0.25)" strokeWidth="2" className="animate-dash-slow" />
-          <line x1="0" y1="60%" x2="100%" y2="60%" stroke="rgba(255, 140, 0, 0.3)" strokeWidth="2" className="animate-dash" />
-          <line x1="0" y1="80%" x2="100%" y2="80%" stroke="rgba(255, 140, 0, 0.25)" strokeWidth="2" className="animate-dash-slower" />
+          <line x1="0" y1="20%" x2="100%" y2="20%" stroke="rgba(249, 115, 22, 0.5)" strokeWidth="1.5" className="animate-dash" />
+          <line x1="0" y1="60%" x2="100%" y2="60%" stroke="rgba(234, 88, 12, 0.5)" strokeWidth="1.5" className="animate-dash-slow" />
         </svg>
       </div>
 
@@ -274,39 +296,91 @@ export default function LoginPage() {
       </div>
 
       <style jsx>{`
-        @keyframes scan {
-          0% {
-            transform: translateY(-100%);
-          }
-          100% {
-            transform: translateY(100%);
-          }
+        /* ENHANCED ANIMATIONS - MAXIMUM VISIBILITY */
+
+        /* Hexagonal grid pattern */
+        .hex-grid {
+          position: absolute;
+          inset: 0;
+          background-image: 
+            linear-gradient(30deg, transparent 24%, rgba(249,115,22,0.12) 25%, rgba(249,115,22,0.12) 26%, transparent 27%, transparent 74%, rgba(249,115,22,0.12) 75%, rgba(249,115,22,0.12) 76%, transparent 77%, transparent),
+            linear-gradient(150deg, transparent 24%, rgba(249,115,22,0.12) 25%, rgba(249,115,22,0.12) 26%, transparent 27%, transparent 74%, rgba(249,115,22,0.12) 75%, rgba(249,115,22,0.12) 76%, transparent 77%, transparent),
+            linear-gradient(270deg, transparent 24%, rgba(249,115,22,0.12) 25%, rgba(249,115,22,0.12) 26%, transparent 27%, transparent 74%, rgba(249,115,22,0.12) 75%, rgba(249,115,22,0.12) 76%, transparent 77%, transparent);
+          background-size: 100px 173px;
+          animation: hex-drift 25s linear infinite;
         }
 
-        .animate-scan {
-          animation: scan 8s linear infinite;
+        @keyframes hex-drift {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(50px, 87px); }
         }
 
-        @keyframes grid-flow {
-          0% {
-            transform: translateY(0) translateX(0);
-          }
-          100% {
-            transform: translateY(50px) translateX(50px);
-          }
+        /* Enhanced radar */
+        .radar-wrapper { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .radar { position: absolute; width: 650px; height: 650px; pointer-events: none; }
+        .radar .ring { position: absolute; inset: 0; border-radius: 50%; box-shadow: inset 0 0 60px rgba(249,115,22,0.15); border: 2px solid rgba(249,115,22,0.25); }
+        .radar .ring.ring-2 { transform: scale(0.75); left: 12.5%; top: 12.5%; width: 75%; height: 75%; }
+        .radar .ring.ring-3 { transform: scale(0.5); left: 25%; top: 25%; width: 50%; height: 50%; }
+        .radar .ring.ring-4 { transform: scale(0.25); left: 37.5%; top: 37.5%; width: 25%; height: 25%; }
+        .radar .sweep { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(rgba(249,115,22,0.4), rgba(249,115,22,0.2) 20%, transparent 40%); filter: blur(20px); transform-origin: 50% 50%; animation: radar-spin 4s linear infinite; }
+        .radar .blip { position: absolute; width: 16px; height: 16px; background: #f97316; border-radius: 50%; box-shadow: 0 0 25px rgba(249,115,22,1), 0 0 50px rgba(249,115,22,0.7); }
+        .radar .b1 { left: 60%; top: 22%; animation: blip 3s ease-in-out infinite; }
+        .radar .b2 { left: 28%; top: 40%; animation: blip 3.2s ease-in-out 0.3s infinite; }
+        .radar .b3 { left: 46%; top: 68%; animation: blip 3.5s ease-in-out 0.6s infinite; }
+        .radar .b4 { left: 72%; top: 52%; animation: blip 3.8s ease-in-out 0.9s infinite; }
+        .radar .b5 { left: 38%; top: 25%; animation: blip 4s ease-in-out 1.2s infinite; }
+        .radar .b6 { left: 68%; top: 75%; animation: blip 3.3s ease-in-out 1.5s infinite; }
+        .radar .b7 { left: 15%; top: 60%; animation: blip 3.7s ease-in-out 1.8s infinite; }
+        .radar .b8 { left: 80%; top: 35%; animation: blip 3.4s ease-in-out 2.1s infinite; }
+
+        /* Data streams */
+        .data-streams { position: absolute; inset: 0; overflow: hidden; }
+        .stream { position: absolute; width: 2px; height: 100px; background: linear-gradient(to bottom, transparent, #f97316, transparent); }
+        .s1 { left: 10%; animation: stream-fall 4s linear infinite; }
+        .s2 { left: 30%; animation: stream-fall 5s linear 0.8s infinite; }
+        .s3 { left: 50%; animation: stream-fall 4.5s linear 1.6s infinite; }
+        .s4 { left: 70%; animation: stream-fall 5.2s linear 2.4s infinite; }
+        .s5 { left: 90%; animation: stream-fall 4.8s linear 3.2s infinite; }
+
+        @keyframes stream-fall {
+          0% { transform: translateY(-100%); opacity: 0; }
+          10% { opacity: 0.6; }
+          90% { opacity: 0.6; }
+          100% { transform: translateY(100vh); opacity: 0; }
         }
 
-        .animate-grid-flow {
-          animation: grid-flow 20s linear infinite;
+        /* Network nodes */
+        .network-nodes { position: absolute; inset: 0; pointer-events: none; }
+        .node { fill: #f97316; opacity: 0.5; animation: node-pulse 4s ease-in-out infinite; }
+        .node-line { stroke: #f97316; stroke-width: 1.5; opacity: 0.25; stroke-dasharray: 5, 5; animation: node-pulse 3s ease-in-out infinite; }
+        .nl1 { animation-delay: 0s; }
+        .nl2 { animation-delay: 0.5s; }
+        .nl3 { animation-delay: 1s; }
+        .nl4 { animation-delay: 1.5s; }
+
+        @keyframes node-pulse {
+          0%, 100% { opacity: 0.25; }
+          50% { opacity: 0.6; }
+        }
+
+        @keyframes radar-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes blip {
+          0% { transform: scale(0.8); opacity: 0.5; }
+          50% { transform: scale(1.3); opacity: 1; }
+          100% { transform: scale(0.8); opacity: 0.5; }
         }
 
         @keyframes pulse-slow {
           0%, 100% {
-            opacity: 0.05;
+            opacity: 0.25;
             transform: translate(-50%, 0) scale(1);
           }
           50% {
-            opacity: 0.08;
+            opacity: 0.35;
             transform: translate(-50%, 0) scale(1.1);
           }
         }
@@ -317,32 +391,17 @@ export default function LoginPage() {
 
         @keyframes pulse-slower {
           0%, 100% {
-            opacity: 0.05;
+            opacity: 0.25;
             transform: scale(1);
           }
           50% {
-            opacity: 0.08;
+            opacity: 0.35;
             transform: scale(1.15);
           }
         }
 
         .animate-pulse-slower {
           animation: pulse-slower 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          25% {
-            transform: translateY(-20px) translateX(10px);
-          }
-          50% {
-            transform: translateY(-10px) translateX(-10px);
-          }
-          75% {
-            transform: translateY(-15px) translateX(5px);
-          }
         }
 
         @keyframes dash {
@@ -365,63 +424,6 @@ export default function LoginPage() {
         .animate-dash-slow {
           stroke-dasharray: 15, 25;
           animation: dash 5s linear infinite;
-        }
-
-        .animate-dash-slower {
-          stroke-dasharray: 20, 30;
-          animation: dash 7s linear infinite;
-        }
-
-        .particle {
-          position: absolute;
-          width: 4px;
-          height: 4px;
-          background: rgba(255, 140, 0, 0.8);
-          border-radius: 50%;
-          box-shadow: 0 0 20px rgba(255, 140, 0, 1), 0 0 40px rgba(255, 140, 0, 0.5);
-          animation: float 15s ease-in-out infinite;
-        }
-
-        .particle-1 {
-          top: 10%;
-          left: 20%;
-          animation-delay: 0s;
-          animation-duration: 12s;
-        }
-
-        .particle-2 {
-          top: 60%;
-          left: 80%;
-          animation-delay: 2s;
-          animation-duration: 15s;
-        }
-
-        .particle-3 {
-          top: 30%;
-          left: 60%;
-          animation-delay: 4s;
-          animation-duration: 10s;
-        }
-
-        .particle-4 {
-          top: 80%;
-          left: 30%;
-          animation-delay: 1s;
-          animation-duration: 13s;
-        }
-
-        .particle-5 {
-          top: 50%;
-          left: 10%;
-          animation-delay: 3s;
-          animation-duration: 14s;
-        }
-
-        .particle-6 {
-          top: 20%;
-          left: 90%;
-          animation-delay: 5s;
-          animation-duration: 11s;
         }
       `}</style>
     </div>
