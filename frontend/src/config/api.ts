@@ -1,8 +1,12 @@
-// API configuration based on environment
+// API Configuration
+const isDevelopment = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const PRODUCTION_API_URL = 'https://threat-intel-integrator.onrender.com';
+const DEVELOPMENT_API_URL = 'http://127.0.0.1:8000';
+
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
-  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:8000'
-    : 'https://your-backend-url.onrender.com'); // Update after backend deployment
+  (isDevelopment ? DEVELOPMENT_API_URL : PRODUCTION_API_URL);
 
 export const API_ENDPOINTS = {
   analyze: `${API_BASE_URL}/analyze`,
