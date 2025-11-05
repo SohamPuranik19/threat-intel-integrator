@@ -1,11 +1,10 @@
-render.yaml
 version: 1
 services:
   - type: web
     name: threat-intel-backend
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "./start.sh"
+    startCommand: "cd /opt/render/project/src && export PYTHONPATH=/opt/render/project/src && python3 -m uvicorn infosecwriteups.api_server_enhanced:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHONPATH
         value: /opt/render/project/src
