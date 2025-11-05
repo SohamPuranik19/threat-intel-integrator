@@ -45,7 +45,10 @@ app.add_middleware(
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:8000",
-        "*"  # In production, specify exact domains
+        "https://threat-intel-integrator.vercel.app",
+        "https://threat-intel-integrator-git-feat-quick-verdict-soham-s-projects-237fa4b2.vercel.app",
+        "https://*.vercel.app",  # Allow all Vercel preview deployments
+        "*"  # Allow all origins for now (can restrict later)
     ],
     allow_credentials=True,
     allow_methods=["*"],
