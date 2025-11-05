@@ -5,8 +5,10 @@ services:
     name: threat-intel-backend
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "python -m uvicorn infosecwriteups.api_server_enhanced:app --host 0.0.0.0 --port $PORT"
+    startCommand: "PYTHONPATH=/opt/render/project/src python -m uvicorn infosecwriteups.api_server_enhanced:app --host 0.0.0.0 --port $PORT"
     envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
       - key: PYTHON_VERSION
         value: 3.9.6
       - key: VIRUSTOTAL_API_KEY
