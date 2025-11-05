@@ -18,19 +18,30 @@ export default function Charts({ data }: any) {
   })
 
   return (
-    <div className="card">
-      <h3 className="text-lg font-bold mb-4">Threat Score Distribution</h3>
-      <div style={{ width: '100%', height: 240 }}>
-        <ResponsiveContainer>
-          <BarChart data={buckets}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#071025" />
-            <XAxis dataKey="range" stroke="#7f9bb3" />
-            <YAxis stroke="#7f9bb3" />
-            <Tooltip />
-            <Bar dataKey="count" fill="#00d9ff" />
-          </BarChart>
-        </ResponsiveContainer>
+    <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl shadow-2xl shadow-orange-500/10 overflow-hidden border border-orange-500/20">
+      <div className="h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-glow" />
+      <div className="p-6">
+        <h3 className="text-lg font-bold mb-4 text-white">Threat Score Distribution</h3>
+        <div style={{ width: '100%', height: 240 }}>
+          <ResponsiveContainer>
+            <BarChart data={buckets}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#0b1220" />
+              <XAxis dataKey="range" stroke="#94a3b8" tick={{ fill: '#94a3b8' }} />
+              <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8' }} />
+              <Tooltip contentStyle={{ backgroundColor: '#071021', borderColor: '#1f2937', color: '#fff' }} labelStyle={{ color: '#9ca3af' }} />
+              <Bar dataKey="count" fill="#f97316" radius={[6,6,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes glow {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+        .animate-glow { animation: glow 3s ease-in-out infinite; }
+      `}</style>
     </div>
   )
 }

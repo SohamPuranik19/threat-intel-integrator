@@ -47,41 +47,38 @@ export default function Page(){
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Animated matrix-style background - MORE VISIBLE */}
-      <div className="fixed inset-0 opacity-15">
-        <div className="absolute inset-0 animate-grid-flow" style={{
-          backgroundImage: `
-            repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 140, 0, 0.08) 2px, rgba(255, 140, 0, 0.08) 4px),
-            repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 140, 0, 0.08) 2px, rgba(255, 140, 0, 0.08) 4px)
-          `,
-          backgroundSize: '50px 50px'
-        }}></div>
-      </div>
+      {/* Multi-layer animated background - MUCH BRIGHTER */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        {/* Matrix-style falling code - VERY VISIBLE */}
+        <canvas id="matrix-canvas" className="absolute inset-0 w-full h-full opacity-50"></canvas>
 
-      {/* Animated floating particles - LARGER & BRIGHTER */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="particle particle-1"></div>
-        <div className="particle particle-2"></div>
-        <div className="particle particle-3"></div>
-        <div className="particle particle-4"></div>
-        <div className="particle particle-5"></div>
-        <div className="particle particle-6"></div>
-        <div className="particle particle-7"></div>
-        <div className="particle particle-8"></div>
-      </div>
+        {/* Radar with increased visibility */}
+        <div className="radar-wrapper opacity-80">
+          <div className="radar">
+            <div className="ring ring-1"></div>
+            <div className="ring ring-2"></div>
+            <div className="ring ring-3"></div>
+            <div className="sweep" />
+            <div className="blip b1" />
+            <div className="blip b2" />
+            <div className="blip b3" />
+            <div className="blip b4" />
+          </div>
+        </div>
 
-      {/* Animated orange glows - BRIGHTER */}
-      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
-      <div className="fixed bottom-0 left-0 w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-3xl animate-pulse-slower"></div>
+        {/* MUCH BRIGHTER ambient glows */}
+        <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-orange-500/30 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="fixed bottom-0 left-0 w-[500px] h-[500px] bg-orange-600/30 rounded-full blur-3xl animate-pulse-slower" />
+      </div>
 
       {/* Animated circuit lines - MORE VISIBLE */}
-      <div className="fixed inset-0 pointer-events-none opacity-20">
+      <div className="fixed inset-0 pointer-events-none opacity-30">
         <svg className="w-full h-full">
-          <line x1="0" y1="15%" x2="100%" y2="15%" stroke="rgba(255, 140, 0, 0.3)" strokeWidth="2" className="animate-dash" />
-          <line x1="0" y1="35%" x2="100%" y2="35%" stroke="rgba(255, 140, 0, 0.25)" strokeWidth="2" className="animate-dash-slow" />
-          <line x1="0" y1="55%" x2="100%" y2="55%" stroke="rgba(255, 140, 0, 0.3)" strokeWidth="2" className="animate-dash" />
-          <line x1="0" y1="75%" x2="100%" y2="75%" stroke="rgba(255, 140, 0, 0.25)" strokeWidth="2" className="animate-dash-slower" />
-          <line x1="0" y1="90%" x2="100%" y2="90%" stroke="rgba(255, 140, 0, 0.3)" strokeWidth="2" className="animate-dash" />
+          <line x1="0" y1="15%" x2="100%" y2="15%" stroke="rgba(255, 140, 0, 0.5)" strokeWidth="2" className="animate-dash" />
+          <line x1="0" y1="35%" x2="100%" y2="35%" stroke="rgba(255, 140, 0, 0.4)" strokeWidth="2" className="animate-dash-slow" />
+          <line x1="0" y1="55%" x2="100%" y2="55%" stroke="rgba(255, 140, 0, 0.5)" strokeWidth="2" className="animate-dash" />
+          <line x1="0" y1="75%" x2="100%" y2="75%" stroke="rgba(255, 140, 0, 0.4)" strokeWidth="2" className="animate-dash-slower" />
+          <line x1="0" y1="90%" x2="100%" y2="90%" stroke="rgba(255, 140, 0, 0.5)" strokeWidth="2" className="animate-dash" />
         </svg>
       </div>
 
@@ -199,6 +196,7 @@ export default function Page(){
         }
 
         .animate-grid-flow {
+          /* kept for backward compatibility, unused when radar is active */
           animation: grid-flow 20s linear infinite;
         }
 
@@ -232,19 +230,27 @@ export default function Page(){
           animation: pulse-slower 6s ease-in-out infinite;
         }
 
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          25% {
-            transform: translateY(-20px) translateX(10px);
-          }
-          50% {
-            transform: translateY(-10px) translateX(-10px);
-          }
-          75% {
-            transform: translateY(-15px) translateX(5px);
-          }
+        /* Radar sweep and blips - MUCH MORE VISIBLE */}
+        .radar-wrapper { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .radar { position: absolute; width: 560px; height: 560px; top: 10%; left: 8%; pointer-events: none; }
+        .radar .ring { position: absolute; inset: 0; border-radius: 50%; box-shadow: inset 0 0 60px rgba(249,115,22,0.15); border: 2px solid rgba(249,115,22,0.25); }
+        .radar .ring.ring-2 { transform: scale(0.66); left: 17%; top: 17%; width: 66%; height: 66%; }
+        .radar .ring.ring-3 { transform: scale(0.33); left: 33%; top: 33%; width: 33%; height: 33%; }
+        .radar .sweep { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(rgba(249,115,22,0.4), rgba(249,115,22,0.2) 20%, transparent 40%); filter: blur(15px); transform-origin: 50% 50%; animation: radar-spin 4s linear infinite; }
+        .radar .blip { position: absolute; width: 16px; height: 16px; background: #f97316; border-radius: 50%; box-shadow: 0 0 25px rgba(249,115,22,1), 0 0 50px rgba(249,115,22,0.7); }
+        .radar .b1 { left: 60%; top: 22%; animation: blip 3s ease-in-out infinite; }
+        .radar .b2 { left: 28%; top: 40%; animation: blip 3.5s ease-in-out 0.6s infinite; }
+        .radar .b3 { left: 46%; top: 68%; animation: blip 4s ease-in-out 1.2s infinite; }
+        .radar .b4 { left: 72%; top: 52%; animation: blip 3.2s ease-in-out 0.9s infinite; }
+
+        @keyframes radar-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes blip {
+          0%, 100% { transform: scale(0.8); opacity: 0.5; }
+          50% { transform: scale(1.5); opacity: 1; }
         }
 
         @keyframes dash {
@@ -287,71 +293,7 @@ export default function Page(){
           animation: glow 3s ease-in-out infinite;
         }
 
-        .particle {
-          position: absolute;
-          width: 4px;
-          height: 4px;
-          background: rgba(255, 140, 0, 0.8);
-          border-radius: 50%;
-          box-shadow: 0 0 20px rgba(255, 140, 0, 1), 0 0 40px rgba(255, 140, 0, 0.5);
-          animation: float 15s ease-in-out infinite;
-        }
-
-        .particle-1 {
-          top: 10%;
-          left: 20%;
-          animation-delay: 0s;
-          animation-duration: 12s;
-        }
-
-        .particle-2 {
-          top: 60%;
-          left: 80%;
-          animation-delay: 2s;
-          animation-duration: 15s;
-        }
-
-        .particle-3 {
-          top: 30%;
-          left: 60%;
-          animation-delay: 4s;
-          animation-duration: 10s;
-        }
-
-        .particle-4 {
-          top: 80%;
-          left: 30%;
-          animation-delay: 1s;
-          animation-duration: 13s;
-        }
-
-        .particle-5 {
-          top: 50%;
-          left: 10%;
-          animation-delay: 3s;
-          animation-duration: 14s;
-        }
-
-        .particle-6 {
-          top: 20%;
-          left: 90%;
-          animation-delay: 5s;
-          animation-duration: 11s;
-        }
-
-        .particle-7 {
-          top: 70%;
-          left: 50%;
-          animation-delay: 2.5s;
-          animation-duration: 16s;
-        }
-
-        .particle-8 {
-          top: 40%;
-          left: 15%;
-          animation-delay: 4.5s;
-          animation-duration: 12s;
-        }
+        /* removed floating particle styles in favor of radar blips */
       `}</style>
     </div>
   )
