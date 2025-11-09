@@ -1,0 +1,16 @@
+nohup: ignoring input
+INFO:     Started server process [21159]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+Current directory: /workspaces/threat-intel-integrator-main
+Script directory: /workspaces/threat-intel-integrator-main
+Python path: ['/workspaces/threat-intel-integrator-main', '/workspaces/threat-intel-integrator-main', '/usr/local/lib/python311.zip', '/usr/local/lib/python3.11', '/usr/local/lib/python3.11/lib-dynload', '/home/vscode/.local/lib/python3.11/site-packages', '/usr/local/lib/python3.11/site-packages']
+Contents of current dir: ['AUTHENTICATION.md', 'README_ENHANCED.md', 'complete_analysis.json', 'run.py', 'backend.log', 'USER_GUIDE.md', 'render.yaml', 'tools', 'threat_intel.db', '.DS_Store', 'frontend', 'vercel.json', 'requirements.txt', 'MANUAL_TESTING_GUIDE.md', 'IMPLEMENTATION_SUMMARY.md', 'CHANGELOG.md', 'TROUBLESHOOTING.md', 'Dockerfile', 'start_backend.sh', 'tests', 'quickstart.sh', 'TABLE_FIXED.md', '.devcontainer', 'TESTING_GUIDE.md', 'infosecwriteups', 'README.md', 'samples', 'uvicorn.log', 'DEPLOYMENT_GUIDE.md', 'threat_intel_enhanced.db', '.gitignore', 'STEP_BY_STEP_TESTING.md', '.venv', 'scripts', '.github', '.uvicorn.log', 'test_advanced_features.py', 'test_api.py', '.env.example', 'REAL_WORLD_USE_CASES.md', '.frontend.log', '.git', 'PRODUCTION_DEPLOYMENT_CHECKLIST.md', 'start.sh']
+infosecwriteups directory found!
+Contents: ['config.py', 'frontend', 'api_integrations.py', 'database.py', '__init__.py', 'processor.py', '__pycache__', 'api_server.py', 'requirement.txt', 'database_enhanced.py', 'main.py', 'api_server_enhanced.py']
+INFO:     127.0.0.1:47130 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47072 - "POST /search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56564 - "POST /search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60862 - "POST /search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59972 - "GET /health HTTP/1.1" 200 OK

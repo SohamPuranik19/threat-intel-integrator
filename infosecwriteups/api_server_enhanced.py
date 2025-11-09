@@ -1,3 +1,5 @@
+# 
+# Push an empty commit to main to force Vercel to deploy using the existing vercel.json
 from typing import Optional
 import os
 import sys
@@ -12,11 +14,6 @@ if str(repo_root) not in sys.path:
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-import time
-import collections
-from starlette.requests import Request
-from starlette.responses import Response
-from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
@@ -43,73 +40,10 @@ app = FastAPI(
     version="2.0.0"
 )
 
-
-# --- Basic API key middleware (optional, enabled if API_KEY set) -----------------
-API_KEY = os.getenv('API_KEY', '')
-
-
-class APIKeyMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        # If no API key is configured, skip enforcement
-        if not API_KEY:
-            return await call_next(request)
-
-        # Allow health and root endpoints without API key
-        if request.url.path in ['/', '/health']:
-            return await call_next(request)
-
-        header_key = request.headers.get('x-api-key') or request.headers.get('X-API-KEY')
-        if not header_key or header_key != API_KEY:
-            return Response(status_code=401, content='{"detail":"Unauthorized - missing/invalid API key"}', media_type='application/json')
-
-        return await call_next(request)
-
-
-# --- Simple in-memory per-IP rate limiter -------------------------------------
-RATE_LIMIT_REQUESTS = int(os.getenv('RATE_LIMIT_REQUESTS', '60'))
-RATE_LIMIT_WINDOW = int(os.getenv('RATE_LIMIT_WINDOW_SECONDS', '60'))
-
-# { ip: deque([timestamps]) }
-_ip_buckets = collections.defaultdict(collections.deque)
-
-
-class SimpleRateLimitMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        # Exempt root and health
-        if request.url.path in ['/', '/health']:
-            return await call_next(request)
-
-        ip = request.client.host if request.client else 'unknown'
-        now = time.time()
-        dq = _ip_buckets[ip]
-
-        # Remove timestamps older than window
-        while dq and dq[0] <= now - RATE_LIMIT_WINDOW:
-            dq.popleft()
-
-        if len(dq) >= RATE_LIMIT_REQUESTS:
-            return Response(status_code=429, content='{"detail":"Too Many Requests"}', media_type='application/json')
-
-        dq.append(now)
-        return await call_next(request)
-
-
-# Register middlewares
-app.add_middleware(SimpleRateLimitMiddleware)
-app.add_middleware(APIKeyMiddleware)
-
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:8000",
-        "https://threat-intel-integrator.vercel.app",
-        "https://threat-intel-integrator-git-feat-quick-verdict-soham-s-projects-237fa4b2.vercel.app",
-        "https://*.vercel.app",  # Allow all Vercel preview deployments
-        "*"  # Allow all origins for now (can restrict later)
-    ],
+    allow_origins=["*"],  # Allow all origins for now
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -174,25 +108,29 @@ def detect_indicator_type(indicator: str) -> str:
 @app.get("/")
 def root():
     """API root endpoint"""
-    return {
-        "service": "Advanced Threat Intelligence API",
-        "version": "2.0.0",
-        "features": [
-            "Multi-source threat intelligence",
-            "MITRE ATT&CK mapping",
-            "IOC classification",
-            "Connection graph generation",
-            "Comprehensive scoring"
-        ],
-        "endpoints": {
-            "analyze": "/analyze",
-            "search": "/search",
-            "indicator": "/indicator/{indicator}",
-            "graph": "/graph/{indicator}",
-            "mitre_stats": "/mitre/statistics",
-            "indicators": "/indicators"
+    try:
+        return {
+            "service": "Advanced Threat Intelligence API",
+            "version": "2.0.0",
+            "features": [
+                "Multi-source threat intelligence",
+                "MITRE ATT&CK mapping",
+                "IOC classification",
+                "Connection graph generation",
+                "Comprehensive scoring"
+            ],
+            "endpoints": {
+                "analyze": "/analyze",
+                "search": "/search",
+                "indicator": "/indicator/{indicator}",
+                "graph": "/graph/{indicator}",
+                "mitre_stats": "/mitre/statistics",
+                "indicators": "/indicators"
+            }
         }
-    }
+    except Exception as e:
+        print(f"Error in root: {e}")
+        raise
 
 
 @app.post("/analyze")

@@ -6,30 +6,23 @@ import { CheckCircle, AlertCircle, AlertTriangle, Shield, Info } from 'lucide-re
 export default function QuickVerdict({ data }: any){
   if (!data) return null
   
-  // Extract data from enhanced API response
-  const scorecard = data.scorecard || {}
-  const classification = data.classification || {}
-  const relatedIocs = data.related_iocs || {}
+  const score = data.threat_score ?? data.heuristic_score ?? 0
+  const classification = data.classification || 'Unknown'
   
-  const score = scorecard.composite_score || data.threat_score || data.heuristic_score || 0
-  const status = scorecard.classification || data.classification || 'Unknown'
-  const severity = scorecard.severity || 'Unknown'
-  const iocType = classification.ioc_type || 'unknown'
-  const confidence = classification.confidence || 0
-  const mitreTactic = classification.mitre_tactic || ''
-  const mitreTechnique = classification.mitre_technique || ''
-  
+  let status = classification
   let statusColor = 'text-gray-400'
   let bgColor = 'bg-gray-500/10'
   let borderColor = 'border-gray-500/20'
   let icon = <Info size={32} className="text-gray-400" />
   
-  if (status === 'Malicious' || score >= 70) {
+  if (status === 'Malicious' || score >= 75) {
+    status = 'Malicious'
     statusColor = 'text-red-500'
     bgColor = 'bg-red-500/10'
     borderColor = 'border-red-500/30'
     icon = <AlertCircle size={32} className="text-red-500" />
   } else if (status === 'Suspicious' || score >= 40) {
+    status = 'Suspicious'
     statusColor = 'text-orange-500'
     bgColor = 'bg-orange-500/10'
     borderColor = 'border-orange-500/30'
@@ -80,19 +73,14 @@ export default function QuickVerdict({ data }: any){
               }`}>
                 {status}
               </span>
-              {severity && severity !== 'Unknown' && (
-                <span className="px-3 py-1 rounded-lg text-sm font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/50">
-                  {severity} Severity
+              {data.category && (
+                <span className="text-sm text-gray-400">
+                  Category: <span className="text-orange-400 font-semibold">{data.category}</span>
                 </span>
               )}
-              {iocType && iocType !== 'unknown' && iocType !== 'benign' && (
+              {data.confidence && (
                 <span className="text-sm text-gray-400">
-                  IOC Type: <span className="text-orange-400 font-semibold">{iocType.toUpperCase()}</span>
-                </span>
-              )}
-              {confidence > 0 && (
-                <span className="text-sm text-gray-400">
-                  Confidence: <span className="text-orange-400 font-semibold">{confidence}%</span>
+                  Confidence: <span className="text-orange-400 font-semibold">{data.confidence}</span>
                 </span>
               )}
             </div>
@@ -102,34 +90,6 @@ export default function QuickVerdict({ data }: any){
         {/* Additional Details */}
         <div className="mt-4 pt-4 border-t border-orange-500/10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            {scorecard.sources_checked && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1">Sources Checked</div>
-                <div className="text-white font-semibold">
-                  {scorecard.sources_checked}/{scorecard.total_sources || 9}
-                </div>
-              </div>
-            )}
-            {mitreTactic && mitreTactic !== 'None' && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1">MITRE Tactic</div>
-                <div className="text-white font-semibold text-xs">{mitreTactic}</div>
-              </div>
-            )}
-            {mitreTechnique && mitreTechnique !== 'None' && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1">MITRE Technique</div>
-                <div className="text-white font-semibold">{mitreTechnique}</div>
-              </div>
-            )}
-            {(relatedIocs.domains?.length || relatedIocs.ips?.length || 0) > 0 && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1">Related IOCs</div>
-                <div className="text-white font-semibold">
-                  {(relatedIocs.domains?.length || 0) + (relatedIocs.ips?.length || 0)} found
-                </div>
-              </div>
-            )}
             {data.country && (
               <div>
                 <div className="text-gray-400 text-xs mb-1">Country</div>

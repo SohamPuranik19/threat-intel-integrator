@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { Search, Database, Zap } from 'lucide-react'
+import { API_ENDPOINTS } from '../config/api'
 
 const SAMPLE_SEARCHES = [
   { label: 'Google DNS', value: '8.8.8.8' },
@@ -29,39 +30,14 @@ export default function SearchBar({ onResult, onFetchAll }: any){
     setSuccess(null)
     
     try {
-      // Auto-detect indicator type
-      let indicator_type = 'domain'
-      
-      // Check if it's an IP address
-      const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/
-      if (ipRegex.test(q)) {
-        indicator_type = 'ip'
-      }
-      // Check if it's a URL
-      else if (q.startsWith('http://') || q.startsWith('https://')) {
-        indicator_type = 'url'
-      }
-      // Check if it's a hash (MD5: 32, SHA1: 40, SHA256: 64 hex chars)
-      else if (/^[a-fA-F0-9]{32}$|^[a-fA-F0-9]{40}$|^[a-fA-F0-9]{64}$/.test(q)) {
-        indicator_type = 'hash'
-      }
-      
-      const res = await axios.post('http://127.0.0.1:8000/analyze', { 
-        indicator: q,
-        indicator_type: indicator_type
+      const res = await axios.post(API_ENDPOINTS.analyze, { 
+        indicator: q
       })
-      
-      // Extract the data from the new API response format
-      if (res.data.status === 'success') {
-        onResult?.(res.data.data)
-        setSuccess(`✓ Analysis complete for "${q}" (${indicator_type})`)
-      } else {
-        setError(res.data.message || 'Analysis failed')
-      }
-      
+      onResult?.(res.data)
+      setSuccess(`Analysis complete for "${q}"`)
       setTimeout(() => setSuccess(null), 3000)
     } catch (err: any){
-      const errorMsg = err?.response?.data?.detail || err?.message || 'Analysis failed'
+      const errorMsg = err?.response?.data?.detail || err?.message || 'Lookup failed'
       setError(errorMsg)
     } finally { 
       setLoading(false) 
@@ -74,10 +50,9 @@ export default function SearchBar({ onResult, onFetchAll }: any){
     setSuccess(null)
     
     try{
-      const res = await axios.get('http://127.0.0.1:8000/indicators?limit=200')
-      const indicators = res.data.results || res.data.indicators || []
-      onFetchAll?.(indicators)
-      setSuccess(`✓ Loaded ${indicators.length} records`)
+      const res = await axios.get(API_ENDPOINTS.indicators, { params: { limit: 200 } })
+      onFetchAll?.(res.data.results || [])
+      setSuccess(`Loaded ${res.data.results?.length || 0} records`)
       setTimeout(() => setSuccess(null), 3000)
     }catch(err: any){ 
       const errorMsg = err?.response?.data?.detail || err?.message || 'Failed to load data'

@@ -1,0 +1,21 @@
+nohup: ignoring input
+
+> threat-intel-frontend@1.0.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 5.9s
+ ○ Compiling / ...
+ ✓ Compiled / in 1856ms (1746 modules)
+ GET / 200 in 2120ms
+ ✓ Compiled in 288ms (841 modules)
+ GET / 200 in 55ms
+ GET / 200 in 40ms
+ GET / 200 in 39ms
+ ✓ Compiled in 650ms (1746 modules)
+ ✓ Compiled in 295ms (1746 modules)
+ ✓ Compiled in 371ms (1748 modules)
+ ✓ Compiled in 223ms (1748 modules)
